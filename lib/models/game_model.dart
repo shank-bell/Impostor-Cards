@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+enum CardRole { crewmate, impostor }
+
+class PlayerCard {
+  final String playerName;
+  final CardRole role;
+  final Color color;
+
+  const PlayerCard({
+    required this.playerName,
+    required this.role,
+    required this.color,
+  });
+}
+
+class GameSettings {
+  final int totalPlayers;
+  final int impostorCount;
+
+  const GameSettings({
+    required this.totalPlayers,
+    required this.impostorCount,
+  });
+}
+
+class GameEngine {
+  static const List<Color> playerColors = [
+    Color(0xFFC51111), // Red
+    Color(0xFF132ED1), // Blue
+    Color(0xFF117F2D), // Green
+    Color(0xFFED54BA), // Pink
+    Color(0xFFEF7D0D), // Orange
+    Color(0xFFF5F557), // Yellow
+    Color(0xFF3F474E), // Black
+    Color(0xFFD6E0F0), // White
+    Color(0xFF6B2FBB), // Purple
+    Color(0xFF71491E), // Brown
+    Color(0xFF38FEDC), // Cyan
+    Color(0xFF50EF39), // Lime
+  ];
+
+  static List<PlayerCard> generateCards(
+      List<String> playerNames, int impostorCount) {
+    final random = Random();
+    final List<CardRole> roles = [
+      ...List.filled(impostorCount, CardRole.impostor),
+      ...List.filled(playerNames.length - impostorCount, CardRole.crewmate),
+    ];
+    roles.shuffle(random);
+
+    final shuffledColors = List<Color>.from(playerColors)..shuffle(random);
+
+    return List.generate(playerNames.length, (i) {
+      return PlayerCard(
+        playerName: playerNames[i],
+        role: roles[i],
+        color: shuffledColors[i % shuffledColors.length],
+      );
+    });
+  }
+}
